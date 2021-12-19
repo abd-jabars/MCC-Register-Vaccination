@@ -29,6 +29,7 @@ namespace UserAuthGroup
             List<User> users = new List<User>();
             users.Add(new User(10001, "Candra", "Irawan", "candra.irawan1", "$2b$10$8tzD9anTWecp9EtPdg2uMu3Q9GU7GvokUIT1JFw2ToW/bJ1NRGEWy", "Admin", "Kuda"));
             users.Add(new User(10002, "Agnes", "Fahira", "agnes.fahira2", "$2a$12$KPHdnVHAv7E7XJxnm6l9oeuvURQodetvZWy1ZMuI5eykviCK0WH0G", "Admin", "Kucing"));
+            users.Add(new User(10003, "Im", "Groot", "im.groot3", "$2a$12$E4NRmjnF0gJn8wlsjkY3Fe5.1pEBRTwCiHp/Hro4vepTCJZSKzaBG", "Admin", "Panda"));
 
             List<UserVaccine> userVaccines = new List<UserVaccine>();
 
@@ -178,10 +179,11 @@ namespace UserAuthGroup
             {
                 User user = new User();
                 User userVaccine = user.GetUser(username, users);
+                Console.Clear();
                 Console.WriteLine("\t------------------------------\n");
                 Console.WriteLine("\t            About Me          \n");
                 Console.WriteLine("\t------------------------------\n");
-                Console.WriteLine($"\tName \t: {userVaccine.FirstName} {userVaccine.LastName}");
+                Console.WriteLine($"\tName \t: {userVaccine.GenerateCapitalize(userVaccine.FirstName)} {userVaccine.GenerateCapitalize(userVaccine.LastName)}");
                 Console.WriteLine("\n\t------------------------------\n");
                 Console.WriteLine("\tMenu: \n");
                 Console.WriteLine("\t1. Edit profile \n\t2. Back to home page");

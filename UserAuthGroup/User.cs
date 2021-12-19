@@ -41,6 +41,12 @@ namespace UserAuthGroup
 
         }
 
+        public User(string username, string firstname, string lastname)
+        {
+            this.UserName = username;
+            this.FirstName = firstname;
+            this.LastName = lastname;
+        }
 
         // Function untuk verifikasi data dengan melakukan cek data username dan password sama dengan database, jika sama maka akan melihat role dari user yang login.
         public string AuthenticationUser(List<User> users)
@@ -149,23 +155,18 @@ namespace UserAuthGroup
             return result;
         }
 
-        // Menampilkan detail dari user yang login (User Class)
 
-        public void GetUserProfile(string username, List<User> users)
+        public User GetUser(string username, List<User> users)
         {
             for (int i = 0; i < users.Count; i++)
             {
                 User user = users[i];
                 if (user.UserName == username)
                 {
-                    Console.Clear();
-                    Console.WriteLine("\t------------------------------\n");
-                    Console.WriteLine("\t            About Me          \n");
-                    Console.WriteLine("\t------------------------------\n");
-                    Console.WriteLine($"\tName \t: {user.FirstName} {user.LastName}");
+                    return new User(user.UserName, user.FirstName, user.LastName);
                 }
             }
-
+            return new User();
         }
     }
 }

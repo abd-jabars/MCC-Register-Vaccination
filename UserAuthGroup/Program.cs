@@ -157,7 +157,7 @@ namespace UserAuthGroup
                         RegistrationVaccination(username, users, userVaccines);
                         break;
                     case "2":
-                        AboutView(username,users);
+                        AboutView(username, users);
                         break;
                     case "3":
                         status = Exit(status);
@@ -216,7 +216,7 @@ namespace UserAuthGroup
                 vaccineDate = int.Parse(Console.ReadLine());
                 VaccineView(3);
                 vaccinePlace = int.Parse(Console.ReadLine());
-                userVaccines.Add(new UserVaccine(userVaccine.UserName,userVaccine.FirstName, userVaccine.LastName, vaccineType-1, vaccineDate-1, vaccinePlace-1));
+                userVaccines.Add(new UserVaccine(userVaccine.UserName, userVaccine.FirstName, userVaccine.LastName, vaccineType - 1, vaccineDate - 1, vaccinePlace - 1));
                 Console.WriteLine("\n \t Enter to Check Your Vaccine Information");
 
                 ConsoleKeyInfo KeySelect;
@@ -261,37 +261,37 @@ namespace UserAuthGroup
         //Function untuk menampilkan jenis/tanggal/tempat vaksin
         private static void VaccineView(int vaccine)
         {
-                Console.Clear();
-                Console.WriteLine("\t------------------------------\n");
-                Console.WriteLine("\t   Registration Vaccination   \n");
-                Console.WriteLine("\t------------------------------\n");
-                switch (vaccine)
-                {
-                    case 1:
-                        string[] vaccineType = UserVaccine.VaccineTypes();
-                        for (int i = 0; i < vaccineType.Length; i++)
-                        {
-                            Console.WriteLine($"\t {i + 1}. {vaccineType[i]}");
-                        }
-                        Console.WriteLine("\n \t Choose Vaccine Type: ");
-                        break;
-                    case 2:
-                        string[] vaccineDate = UserVaccine.VaccineDates();
-                        for (int i = 0; i < vaccineDate.Length; i++)
-                        {
-                            Console.WriteLine($"\t {i+1}. {vaccineDate[i]}");
-                        }
-                        Console.WriteLine("\n \t Choose Date: ");
-                        break;
-                    case 3:
-                        string[] vaccinePlace = UserVaccine.VaccinePlaces();
-                        for (int i = 0; i < vaccinePlace.Length; i++)
-                        {
-                            Console.WriteLine($"\t {i + 1}. {vaccinePlace[i]}");
-                        }
-                        Console.WriteLine("\n \t Choose Place: ");
-                        break;
-                }
+            Console.Clear();
+            Console.WriteLine("\t------------------------------\n");
+            Console.WriteLine("\t   Registration Vaccination   \n");
+            Console.WriteLine("\t------------------------------\n");
+            switch (vaccine)
+            {
+                case 1:
+                    string[] vaccineType = UserVaccine.VaccineTypes();
+                    for (int i = 0; i < vaccineType.Length; i++)
+                    {
+                        Console.WriteLine($"\t {i + 1}. {vaccineType[i]}");
+                    }
+                    Console.WriteLine("\n \t Choose Vaccine Type: ");
+                    break;
+                case 2:
+                    string[] vaccineDate = UserVaccine.VaccineDates();
+                    for (int i = 0; i < vaccineDate.Length; i++)
+                    {
+                        Console.WriteLine($"\t {i + 1}. {vaccineDate[i]}");
+                    }
+                    Console.WriteLine("\n \t Choose Date: ");
+                    break;
+                case 3:
+                    string[] vaccinePlace = UserVaccine.VaccinePlaces();
+                    for (int i = 0; i < vaccinePlace.Length; i++)
+                    {
+                        Console.WriteLine($"\t {i + 1}. {vaccinePlace[i]}");
+                    }
+                    Console.WriteLine("\n \t Choose Place: ");
+                    break;
+            }
         }
 
         // Function yang menampilkan Two View untuk Admin dengan pilihan : manage vaccination, manage user,dan logout.
@@ -413,7 +413,7 @@ namespace UserAuthGroup
                     string Type = UserVaccine.VaccineInfo(userVaccines[i].Type, UserVaccine.VaccineTypes());
                     string Date = UserVaccine.VaccineInfo(userVaccines[i].Date, UserVaccine.VaccineDates());
                     string Place = UserVaccine.VaccineInfo(userVaccines[i].Place, UserVaccine.VaccinePlaces());
-                    Console.WriteLine($"\t No: {i+1}");
+                    Console.WriteLine($"\t No: {i + 1}");
                     Console.WriteLine($"\t Name: {userVaccines[i].FirstName} {userVaccines[i].LastName}");
                     Console.WriteLine($"\t Vaccine Type: {Type}");
                     Console.WriteLine($"\t Vaccine Date: {Date}");
@@ -424,7 +424,7 @@ namespace UserAuthGroup
                 Console.WriteLine("\n \t Enter to return to Admin View\t");
                 ConsoleKeyInfo KeySelect;
                 KeySelect = Console.ReadKey(true);
-                if(KeySelect.Key == ConsoleKey.Enter)
+                if (KeySelect.Key == ConsoleKey.Enter)
                 {
                     status = 1;
                 }

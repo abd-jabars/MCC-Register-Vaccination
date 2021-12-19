@@ -28,7 +28,9 @@ namespace UserAuthGroup
 
             List<User> users = new List<User>();
             users.Add(new User(10001, "Candra", "Irawan", "candra.irawan1", "$2b$10$8tzD9anTWecp9EtPdg2uMu3Q9GU7GvokUIT1JFw2ToW/bJ1NRGEWy", "Admin", "Kuda"));
-            users.Add(new User(10001, "Agnes", "Fahira", "agnes.fahira2", "$2a$12$KPHdnVHAv7E7XJxnm6l9oeuvURQodetvZWy1ZMuI5eykviCK0WH0G", "Admin", "Kucing"));
+            users.Add(new User(10002, "Agnes", "Fahira", "agnes.fahira2", "$2a$12$KPHdnVHAv7E7XJxnm6l9oeuvURQodetvZWy1ZMuI5eykviCK0WH0G", "Admin", "Kucing"));
+
+            List<UserVaccine> userVaccines = new List<UserVaccine>();
 
             do
             {
@@ -37,7 +39,7 @@ namespace UserAuthGroup
                 switch (select)
                 {
                     case "1":
-                        LoginView(users);
+                        LoginView(users, userVaccines);
                         break;
                     case "2":
                         RegistrationView(users);
@@ -70,14 +72,14 @@ namespace UserAuthGroup
         }
 
         // Function yang menampilkan Login View dengan user diminta mengisi username dan password
-        private static void LoginView(List<User> users)
+        private static void LoginView(List<User> users, List<UserVaccine> userVaccines)
         {
             string username,
             password;
             int status = 0;
             do
             {
-                
+
                 Console.Clear();
                 Console.WriteLine("\n\tGo to login page <Enter> | Back to main menu <Esc>");
                 ConsoleKeyInfo KeySelect;
@@ -108,14 +110,15 @@ namespace UserAuthGroup
                     {
                         // User dengan role Admin.
                         MessageView(true, "Successfully login");
-                        AdminView(users);
+                        AdminView(users, userVaccines);
 
                     }
                     else if (user.AuthenticationUser(users) == user.UserRole())
                     {
                         // User dengan role User.
                         MessageView(true, "Successfully login");
-                        UserView();
+
+                        UserView(username, users, userVaccines);
                     }
                     else
                     {
@@ -132,7 +135,8 @@ namespace UserAuthGroup
         }
 
         // Function yang menampilkan Two View untuk User dengan pilihan : registration vaccination, about me dan logout.
-        private static void UserView()
+
+        private static void UserView(string username, List<User> users, List<UserVaccine> userVaccines)
         {
             string select;
             int status = 0;
@@ -150,10 +154,10 @@ namespace UserAuthGroup
                 switch (select)
                 {
                     case "1":
-                        Console.WriteLine("Registration Vaccination");
+                        RegistrationVaccination(username, users, userVaccines);
                         break;
                     case "2":
-                        Console.WriteLine("About Me");
+                        AboutView(username,users);
                         break;
                     case "3":
                         status = Exit(status);
@@ -167,8 +171,131 @@ namespace UserAuthGroup
 
         }
 
+        private static void AboutView(string username, List<User> users)
+        {
+            int status = 0;
+            do
+            {
+                User user = new User();
+                User userVaccine = user.GetUser(username, users);
+                Console.WriteLine("\t------------------------------\n");
+                Console.WriteLine("\t            About Me          \n");
+                Console.WriteLine("\t------------------------------\n");
+                Console.WriteLine($"\tName \t: {userVaccine.FirstName} {userVaccine.LastName}");
+                Console.WriteLine("\n\t------------------------------\n");
+                Console.WriteLine("\tMenu: \n");
+                Console.WriteLine("\t1. Edit profile \n\t2. Back to home page");
+                Console.Write("\n\tSelect menu ~> ");
+                string select = Console.ReadLine();
+                switch (select)
+                {
+                    case "1":
+                        EditProfile(users);
+                        break;
+                    case "2":
+                        status = Exit(status);
+                        break;
+                    default:
+                        break;
+                }
+            } while (status == 0);
+
+        }
+
+        private static void RegistrationVaccination(string username, List<User> users, List<UserVaccine> userVaccines)
+        {
+            int status = 0;
+            do
+            {
+                int vaccineType, vaccineDate, vaccinePlace;
+                User user = new User();
+                User userVaccine = user.GetUser(username, users);
+                VaccineView(1);
+                vaccineType = int.Parse(Console.ReadLine());
+                VaccineView(2);
+                vaccineDate = int.Parse(Console.ReadLine());
+                VaccineView(3);
+                vaccinePlace = int.Parse(Console.ReadLine());
+                userVaccines.Add(new UserVaccine(userVaccine.UserName,userVaccine.FirstName, userVaccine.LastName, vaccineType-1, vaccineDate-1, vaccinePlace-1));
+                Console.WriteLine("\n \t Enter to Check Your Vaccine Information");
+
+                ConsoleKeyInfo KeySelect;
+                KeySelect = Console.ReadKey(true);
+                if (KeySelect.Key == ConsoleKey.Enter)
+                {
+                    VaccineInformation(username, userVaccines, userVaccine);
+                }
+
+                KeySelect = Console.ReadKey(true);
+                if (KeySelect.Key == ConsoleKey.Enter)
+                {
+                    status = 1;
+                }
+
+            } while (status == 0);
+
+        }
+
+        //Function untuk menampilkan informasi vaksin user
+        private static void VaccineInformation(string username, List<UserVaccine> userVaccines, User userVaccine)
+        {
+            Console.Clear();
+            Console.WriteLine("\t------------------------------\n");
+            Console.WriteLine("\t      Vaccine Information     \n");
+            Console.WriteLine("\t------------------------------\n");
+            UserVaccine listVaccine = new UserVaccine();
+            UserVaccine userVaccineInfo = listVaccine.GetVaccine(username, userVaccines);
+            //informasi vaksin yang ada masih berupa int, maka dipakai method UserVaccine.VaccineInfo untuk ngeluarin stringnya
+            string Type = UserVaccine.VaccineInfo(userVaccineInfo.Type, UserVaccine.VaccineTypes());
+            string Date = UserVaccine.VaccineInfo(userVaccineInfo.Date, UserVaccine.VaccineDates());
+            string Place = UserVaccine.VaccineInfo(userVaccineInfo.Place, UserVaccine.VaccinePlaces());
+
+            Console.WriteLine($"\tName: {userVaccine.FirstName} {userVaccine.LastName}");
+            Console.WriteLine($"\tVaccine Type: {Type}");
+            Console.WriteLine($"\tVaccine Date: {Date}");
+            Console.WriteLine($"\tVaccine Place: {Place}");
+            Console.WriteLine("\n \t Enter to Back");
+        }
+
+
+        //Function untuk menampilkan jenis/tanggal/tempat vaksin
+        private static void VaccineView(int vaccine)
+        {
+                Console.Clear();
+                Console.WriteLine("\t------------------------------\n");
+                Console.WriteLine("\t   Registration Vaccination   \n");
+                Console.WriteLine("\t------------------------------\n");
+                switch (vaccine)
+                {
+                    case 1:
+                        string[] vaccineType = UserVaccine.VaccineTypes();
+                        for (int i = 0; i < vaccineType.Length; i++)
+                        {
+                            Console.WriteLine($"\t {i + 1}. {vaccineType[i]}");
+                        }
+                        Console.WriteLine("\n \t Choose Vaccine Type: ");
+                        break;
+                    case 2:
+                        string[] vaccineDate = UserVaccine.VaccineDates();
+                        for (int i = 0; i < vaccineDate.Length; i++)
+                        {
+                            Console.WriteLine($"\t {i+1}. {vaccineDate[i]}");
+                        }
+                        Console.WriteLine("\n \t Choose Date: ");
+                        break;
+                    case 3:
+                        string[] vaccinePlace = UserVaccine.VaccinePlaces();
+                        for (int i = 0; i < vaccinePlace.Length; i++)
+                        {
+                            Console.WriteLine($"\t {i + 1}. {vaccinePlace[i]}");
+                        }
+                        Console.WriteLine("\n \t Choose Place: ");
+                        break;
+                }
+        }
+
         // Function yang menampilkan Two View untuk Admin dengan pilihan : manage vaccination, manage user,dan logout.
-        private static void AdminView(List<User> users)
+        private static void AdminView(List<User> users, List<UserVaccine> userVaccines)
         {
             int select;
             int status = 0;
@@ -188,13 +315,13 @@ namespace UserAuthGroup
                     switch (select)
                     {
                         case 1:
-                            Console.WriteLine("Manage Vaccination");
+                            ManageVaccinationView(userVaccines);
                             break;
                         case 2:
                             ManageUserView(users);
                             break;
                         case 3:
-                            GuestView();
+                            status = Exit(status);
                             break;
                         case 4:
                             break;
@@ -207,15 +334,101 @@ namespace UserAuthGroup
                     ExecptionView();
                 }
 
-                ConsoleKeyInfo KeySelect;
-                while (true)
-                {
-                    KeySelect = Console.ReadKey(true);
+                //ConsoleKeyInfo KeySelect;
+                //while (true)
+                //{
+                //    KeySelect = Console.ReadKey(true);
 
-                    // Enter untuk kembali ke Admin View.
-                    if (KeySelect.Key == ConsoleKey.Enter) status = 0;
-                    break;
+                //    // Enter untuk kembali ke Admin View.
+                //    if (KeySelect.Key == ConsoleKey.Enter) status = 0;
+                //    break;
+                //}
+            } while (status == 0);
+        }
+
+        private static void EditProfile(List<User> users)
+        {
+            Console.Clear();
+            Console.WriteLine("\t------------------------------\n");
+            Console.WriteLine("\t         Edit Profile         \n");
+            Console.WriteLine("\t------------------------------\n");
+            Console.Write("\tFirst name \t: ");
+            string firstName = Console.ReadLine();
+            Console.Write("\tLast name \t: ");
+            string lasstName = Console.ReadLine();
+            User user = new User();
+            user.EditProfile(firstName, lasstName, users);
+            LoadingView();
+            MessageView(true, "Profile updated");
+        }
+
+        // Function yang menampilkan Two View untuk Admin dengan pilihan : manage vaccination, manage user,dan logout.
+        private static void AdminView(List<User> users)
+        {
+            string select;
+            int status = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\t------------------------------\n");
+                Console.WriteLine("\t         Medical House        \n");
+                Console.WriteLine("\t------------------------------\n");
+                Console.WriteLine("\t1. Manage Vaccination\t");
+                Console.WriteLine("\t2. Manage User\t");
+                Console.WriteLine("\t3. Logout\n");
+                Console.Write("\tPlease Input a Number : ");
+                select = Console.ReadLine();
+                switch (select)
+                {
+                    case "1":
+                        Console.WriteLine("Manage Vaccination");
+                        break;
+                    case "2":
+                        ManageUserView(users);
+                        break;
+                    case "3":
+                        status = Exit(status);
+                        break;
+                    case "4":
+                        break;
+                    default:
+                        break;
                 }
+            } while (status == 0);
+        }
+
+        //Function untuk manage vaccination
+        private static void ManageVaccinationView(List<UserVaccine> userVaccines)
+        {
+            int status = 0;
+            do
+            {
+                Console.Clear();
+                Console.WriteLine("\t------------------------------\n");
+                Console.WriteLine("\t      Manage Vaccination      \n");
+                Console.WriteLine("\t------------------------------\n");
+
+                for (int i = 0; i < userVaccines.Count; i++)
+                {
+                    string Type = UserVaccine.VaccineInfo(userVaccines[i].Type, UserVaccine.VaccineTypes());
+                    string Date = UserVaccine.VaccineInfo(userVaccines[i].Date, UserVaccine.VaccineDates());
+                    string Place = UserVaccine.VaccineInfo(userVaccines[i].Place, UserVaccine.VaccinePlaces());
+                    Console.WriteLine($"\t No: {i+1}");
+                    Console.WriteLine($"\t Name: {userVaccines[i].FirstName} {userVaccines[i].LastName}");
+                    Console.WriteLine($"\t Vaccine Type: {Type}");
+                    Console.WriteLine($"\t Vaccine Date: {Date}");
+                    Console.WriteLine($"\t Vaccine Place: {Place}");
+                    Console.WriteLine("\t ===============================================================\n");
+                }
+
+                Console.WriteLine("\n \t Enter to return to Admin View\t");
+                ConsoleKeyInfo KeySelect;
+                KeySelect = Console.ReadKey(true);
+                if(KeySelect.Key == ConsoleKey.Enter)
+                {
+                    status = 1;
+                }
+
             } while (status == 0);
         }
 
@@ -232,8 +445,8 @@ namespace UserAuthGroup
                 Console.WriteLine("\t No \t Id \t Name");
                 for (int i = 0; i < users.Count; i++)
                 {
-                    if(users[i].Role == "User")
-                    Console.WriteLine($"\t {i-1}.\t {users[i].Id} \t {users[i].FirstName} {users[i].LastName}");
+                    if (users[i].Role == "User")
+                        Console.WriteLine($"\t {i - 1}.\t {users[i].Id} \t {users[i].FirstName} {users[i].LastName}");
                 }
 
                 Console.WriteLine("\n \t [D]: Delete User");
@@ -247,11 +460,12 @@ namespace UserAuthGroup
                     if (KeySelect.Key == ConsoleKey.Enter)
                     {
                         status = 1;
-                    }else if(KeySelect.Key == ConsoleKey.D)
+                    }
+                    else if (KeySelect.Key == ConsoleKey.D)
                     {
                         DeleteUser(users);
                     }
-                            
+
                     break;
                 }
 
